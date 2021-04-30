@@ -32,8 +32,8 @@ class DeepLinkActivity : Activity() {
                     if(! githubUserName.isNullOrBlank() && ! repositoryName.isNullOrBlank()) {
                         val bundle = Bundle()
                         val intent: Intent? = packageManager.getLaunchIntentForPackage(packageName)
-                        bundle.putString("GITHUB_USER_NAME", githubUserName)
-                        bundle.putString("REPOSITORY_NAME", repositoryName)
+                        bundle.putString(GITHUB_USER_NAME, githubUserName)
+                        bundle.putString(REPOSITORY_NAME, repositoryName)
                         intent?.putExtras(bundle)
                         startActivity(intent)
                         finish()
