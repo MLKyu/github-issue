@@ -7,6 +7,7 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.fragment.app.viewModels
 import com.alansoft.myapplication.R
 import com.alansoft.myapplication.data.RemoteResult
+import com.alansoft.myapplication.data.model.IssueResponse
 import com.alansoft.myapplication.databinding.FragmentListBinding
 import com.alansoft.myapplication.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,8 +48,7 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
                     // nothing
                 }
             }
-        })
-
+        }
     }
 
     private fun setRecyclerAdapter() {
@@ -59,15 +59,9 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
         }
     }
 
-    private fun setResultData(data: BooksSearchResponse) {
-        val list: MutableList<Document?> = ArrayList()
-        if (data.meta?.page ?: -1 > 1) {
-            list.addAll(adapter.currentList)
+    private fun setResultData(data: IssueResponse) {
+        data.repoList?.let {
+            adapter.submitList(it)
         }
-        data.documents?.let {
-            list.addAll(it)
-        }
-        adapter.submitList(list)
     }
-
 }

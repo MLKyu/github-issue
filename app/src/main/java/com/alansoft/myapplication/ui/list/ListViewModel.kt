@@ -7,6 +7,8 @@ import androidx.lifecycle.asLiveData
 import com.alansoft.myapplication.data.RemoteResult
 import com.alansoft.myapplication.data.model.IssueResponse
 import com.alansoft.myapplication.repository.RepoRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 
 /**
@@ -16,7 +18,20 @@ import javax.inject.Inject
 class ListViewModel @Inject constructor(
     private val repository: RepoRepository
 ) : ViewModel() {
-    val _results: MutableLiveData<RemoteResult<IssueResponse>> =
-        repository.getIssues().asLiveData() as MutableLiveData
+
+    private val request = MutableStateFlow(Pair("", ""))
+
+    val _results: MutableLiveData<RemoteResult<IssueResponse>> = request
+        .flatMapLatest {
+            repository.getIssues(it.first, it.second)
+        }
+        .asLiveData() as MutableLiveData
     val results: LiveData<RemoteResult<IssueResponse>> = _results
+
+    fun setRequest(
+        githubUsername: String,
+        repositoryName: String
+    ) {
+        request.value = githubUsername to repositoryName
+    }
 }

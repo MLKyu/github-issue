@@ -19,7 +19,7 @@ class RepoRepository @Inject constructor(
 ) {
     fun getIssues(
         githubUsername: String,
-        repositoryName: String,
+        repositoryName: String
     ): Flow<RemoteResult<IssueResponse>> = flow {
         emit(RemoteResult.loading())
 

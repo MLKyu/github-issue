@@ -5,5 +5,9 @@ package com.alansoft.myapplication.data.model
  * Copyright © 2021 Dreamus Company. All rights reserved.
  */
 data class IssueResponse(
+    val repoList: List<Issue>?
+)
+
+data class Issue(
     val title: String?
 )
