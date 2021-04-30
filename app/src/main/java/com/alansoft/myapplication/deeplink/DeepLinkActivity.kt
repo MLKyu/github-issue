@@ -1,29 +1,46 @@
 package com.alansoft.myapplication.deeplink
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 
-class DeepLinkActivity : AppCompatActivity() {
+class DeepLinkActivity : Activity() {
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    companion object {
+        const val GITHUB_USER_NAME = "GITHUB_USER_NAME"
+        const val REPOSITORY_NAME = "REPOSITORY_NAME"
+    }
 
-        val bundle = Bundle()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         if (Intent.ACTION_VIEW == intent.action) {
             val uri: Uri? = intent.data
-            if (uri != null) {
-                val scheme = uri.scheme
-                val host = uri.host
-                val path = uri.path
+            var githubUserName : String? = null
+            var repositoryName : String? = null
 
-                Log.d("lmk","scheme :" + scheme);
-                Log.d("lmk","host :" + host);
-                Log.d("lmk","path :" + path);
+            if (uri != null) {
+                githubUserName = uri.host
+                try {
+                    repositoryName = uri.path?.let {
+                        it.split("/")[1]
+                    }.toString()
+                } catch (e : Exception) {
+                    //error
+                } finally {
+                    if(! githubUserName.isNullOrBlank() && ! repositoryName.isNullOrBlank()) {
+                        val bundle = Bundle()
+                        val intent: Intent? = packageManager.getLaunchIntentForPackage(packageName)
+                        bundle.putString("GITHUB_USER_NAME", githubUserName)
+                        bundle.putString("REPOSITORY_NAME", repositoryName)
+                        intent?.putExtras(bundle)
+                        startActivity(intent)
+                        finish()
+                    }
+                }
             }
         }
     }
+
 }
